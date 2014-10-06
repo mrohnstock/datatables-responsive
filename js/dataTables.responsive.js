@@ -1,11 +1,11 @@
-/*! Responsive 1.0.0
+/*! Responsive 1.0.1
  * 2014 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     Responsive
  * @description Responsive tables plug-in for DataTables
- * @version     1.0.0
+ * @version     1.0.1
  * @file        dataTables.responsive.js
  * @author      SpryMedia Ltd (www.sprymedia.co.uk)
  * @contact     www.sprymedia.co.uk/contact
@@ -111,14 +111,16 @@ Responsive.prototype = {
 		var that = this;
 		var dt = this.s.dt;
 
+		dt.settings()[0]._responsive = this;
+
 		// Use DataTables' private throttle function to avoid processor thrashing
-		$(window).on( 'resize.dtr', dt.settings()[0].oApi._fnThrottle( function () {
+		$(window).on( 'resize.dtr orientationchange.dtr', dt.settings()[0].oApi._fnThrottle( function () {
 			that._resize();
 		} ) );
 
 		// Destroy event handler
 		dt.on( 'destroy.dtr', function () {
-			$(window).off( 'resize.dtr' );
+			$(window).off( 'resize.dtr orientationchange.dtr' );
 		} );
 
 		// Reorder the breakpoints array here in case they have been added out
@@ -391,22 +393,22 @@ Responsive.prototype = {
 
 		// Click handler to show / hide the details rows when they are available
 		$( dt.table().body() ).on( 'click', selector, function (e) {
+			// If the table is not collapsed (i.e. there is no hidden columns)
+			// then take no action
+			if ( ! $(dt.table().node()).hasClass('collapsed' ) ) {
+				return;
+			}
+
 			// For column index, we determine if we should act or not in the
 			// handler - otherwise it is already okay
 			if ( typeof target === 'number' ) {
 				var targetIdx = target < 0 ?
-					dt.columns().eq().length + target :
+					dt.columns().eq(0).length + target :
 					target;
 
 				if ( dt.cell( this ).index().column !== targetIdx ) {
 					return;
 				}
-			}
-
-			// If the table is not collapsed (i.e. there is no hidden columns)
-			// then the details row cannot be displayed
-			if ( ! $(dt.table().node()).hasClass('collapsed' ) ) {
-				return;
 			}
 
 			// $().closest() includes itself in its check
@@ -435,7 +437,14 @@ Responsive.prototype = {
 		var that = this;
 		var dt = this.s.dt;
 
-		if ( dt.columns().visible().indexOf( false ) !== -1 ) {
+		var hiddenColumns = dt.columns(':hidden').indexes().flatten();
+		var haveHidden = true;
+
+		if ( hiddenColumns.length === 0 || ( hiddenColumns.length === 1 && this.s.columns[ hiddenColumns[0] ].control ) ) {
+			haveHidden = false;
+		}
+
+		if ( haveHidden ) {
 			// Got hidden columns
 			$( dt.table().node() ).addClass('collapsed');
 
@@ -541,13 +550,26 @@ Responsive.prototype = {
 		}
 
 		// Clone the table with the current data in it
-		var tableWidth = dt.table().node().offsetWidth;
+		var tableWidth   = dt.table().node().offsetWidth;
 		var columnWidths = dt.columns;
-		var clonedTable = dt.table().node().cloneNode( false );
-		var clonedHeader = $( dt.table().header() ).clone( false ).appendTo( clonedTable );
-		var clonedRow = $( dt.table().body().cloneNode( true ) ).appendTo( clonedTable );
-		var cells = dt.settings()[0].oApi._fnGetUniqueThs( dt.settings()[0], clonedHeader );
-		var inserted = $('<div/>')
+		var clonedTable  = dt.table().node().cloneNode( false );
+		var clonedHeader = $( dt.table().header().cloneNode( false ) ).appendTo( clonedTable );
+		var clonedBody   = $( dt.table().body().cloneNode( false ) ).appendTo( clonedTable );
+
+		// This is a bit slow, but we need to get a clone of each row that
+		// includes all columns. As such, try to do this as little as possible.
+		dt.rows( { page: 'current' } ).indexes().each( function ( idx ) {
+			var clone = dt.row( idx ).node().cloneNode( true );
+			
+			if ( dt.columns( ':hidden' ).flatten().length ) {
+				$(clone).append( dt.cells( idx, ':hidden' ).nodes().to$().clone() );
+			}
+
+			$(clone).appendTo( clonedBody );
+		} );
+
+		var cells        = dt.columns().header().to$().clone( false ).wrapAll('tr').appendTo( clonedHeader );
+		var inserted     = $('<div/>')
 			.css( {
 				width: 1,
 				height: 1,
@@ -558,9 +580,7 @@ Responsive.prototype = {
 
 		// The cloned header now contains the smallest that each column can be
 		dt.columns().eq(0).each( function ( idx ) {
-			columns[idx].minWidth = dt.column( idx ).visible() ?
-				cells[ dt.column( idx ).index('visible') ].offsetWidth :
-				null;
+			columns[idx].minWidth = cells[ idx ].offsetWidth || 0;
 		} );
 
 		inserted.remove();
@@ -662,13 +682,33 @@ Responsive.defaults = {
 };
 
 
+/*
+ * API
+ */
+var Api = $.fn.dataTable.Api;
+
+// Doesn't do anything - work around for a bug in DT... Not documented
+Api.register( 'responsive()', function () {
+	return this;
+} );
+
+Api.register( 'responsive.recalc()', function ( rowIdx, intParse, virtual ) {
+	this.iterator( 'table', function ( ctx ) {
+		if ( ctx._responsive ) {
+			ctx._responsive._resizeAuto();
+			ctx._responsive._resize();
+		}
+	} );
+} );
+
+
 /**
  * Version information
  *
  * @name Responsive.version
  * @static
  */
-Responsive.version = '1.0.0';
+Responsive.version = '1.0.1';
 
 
 $.fn.dataTable.Responsive = Responsive;
