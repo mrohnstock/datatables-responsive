@@ -1,11 +1,11 @@
-/*! Responsive 1.0.2
+/*! Responsive 1.0.3
  * 2014 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     Responsive
  * @description Responsive tables plug-in for DataTables
- * @version     1.0.2
+ * @version     1.0.3
  * @file        dataTables.responsive.js
  * @author      SpryMedia Ltd (www.sprymedia.co.uk)
  * @contact     www.sprymedia.co.uk/contact
@@ -122,7 +122,7 @@ Responsive.prototype = {
 
 		// Destroy event handler
 		dt.on( 'destroy.dtr', function () {
-			$(window).off( 'resize.dtr orientationchange.dtr' );
+			$(window).off( 'resize.dtr orientationchange.dtr draw.dtr' );
 		} );
 
 		// Reorder the breakpoints array here in case they have been added out
@@ -151,6 +151,19 @@ Responsive.prototype = {
 
 			dt.on( 'column-visibility.dtr', function () {
 				that._detailsVis();
+			} );
+
+			// Redraw the details box on each draw. This is used until
+			// DataTables implements a native `updated` event for rows
+			dt.on( 'draw.dtr', function () {
+				dt.rows().iterator( 'row', function ( settings, idx ) {
+					var row = dt.row( idx );
+
+					if ( row.child.isShown() ) {
+						var info = that.c.details.renderer( dt, idx );
+						row.child( info, 'child' ).show();
+					}
+				} );
 			} );
 
 			$(dt.table().node()).addClass( 'dtr-'+details.type );
@@ -204,21 +217,25 @@ Responsive.prototype = {
 		var widthAvailable = dt.table().container().offsetWidth;
 		var usedWidth = widthAvailable - requiredWidth;
 
+		// Control column needs to always be included. This makes it sub-
+		// optimal in terms of using the available with, but to stop layout
+		// thrashing or overflow. Also we need to account for the control column
+		// width first so we know how much width is available for the other
+		// columns, since the control column might not be the first one shown
 		for ( i=0, ien=display.length ; i<ien ; i++ ) {
-			// Control column needs to always be included. This makes it sub-
-			// optimal in terms of using the available with, but to stop layout
-			// thrashing or overflow
 			if ( columns[i].control ) {
 				usedWidth -= columns[i].minWidth;
 			}
-			else if ( display[i] === '-' ) {
-				// Otherwise, remove the width
+		}
+
+		// Allow columns to be shown (counting from the left) until we run out
+		// of room
+		for ( i=0, ien=display.length ; i<ien ; i++ ) {
+			if ( display[i] === '-' && ! columns[i].control ) {
 				display[i] = usedWidth - columns[i].minWidth < 0 ?
 					false :
 					true;
 
-				// Continue counting down the width, so a smaller column to the
-				// left won't be shown
 				usedWidth -= columns[i].minWidth;
 			}
 		}
@@ -757,7 +774,7 @@ Api.register( 'responsive.index()', function ( li ) {
  * @name Responsive.version
  * @static
  */
-Responsive.version = '1.0.2';
+Responsive.version = '1.0.3';
 
 
 $.fn.dataTable.Responsive = Responsive;
