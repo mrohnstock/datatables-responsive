@@ -19,8 +19,22 @@
                 "js/dataTables.responsive.js"
             ],
             "files": [
+                "js/responsive.foundation.js",
+                "js/responsive.jqueryui.js",
+                "js/responsive.bootstrap.min.js",
+                "js/responsive.bootstrap.js",
+                "js/responsive.jqueryui.min.js",
+                "js/responsive.foundation.min.js",
+                "js/dataTables.responsive.js",
                 "js/dataTables.responsive.min.js",
-                "css/dataTables.responsive.min.css"
+                "css/dataTables.responsive.css",
+                "css/responsive.bootstrap.css",
+                "css/responsive.foundation.css",
+                "css/responsive.bootstrap.min.css",
+                "css/dataTables.responsive.min.css",
+                "css/responsive.jqueryui.min.css",
+                "css/responsive.foundation.min.css",
+                "css/responsive.jqueryui.css"
             ],
             "shim": {
                 "deps": ["jquery"]

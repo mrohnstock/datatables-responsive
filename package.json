@@ -2,7 +2,7 @@
     "name": "drmonty-datatables-responsive",
     "description": "Responsive extension for DataTables, providing support for complex tables on all device screen sizes",
     "homepage": "http://datatables.net",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "author": {
         "name": "Allan Jardine",
         "url": "http://sprymedia.co.uk"
@@ -10,7 +10,7 @@
     "main": "js/dataTables.responsive.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/drmonty/datatables-responsive.git"
+        "url": "https://github.com/mrohnstock/datatables-responsive.git"
     },
     "dependencies": {
         "jquery": ">=1.7.0"

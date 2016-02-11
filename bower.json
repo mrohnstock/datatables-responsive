@@ -2,7 +2,7 @@
     "name": "drmonty-datatables-responsive",
     "description": "Responsive extension for DataTables, providing support for complex tables on all device screen sizes",
     "homepage": "http://datatables.net",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "dependencies": {
         "jquery": ">=1.7.0"
     },

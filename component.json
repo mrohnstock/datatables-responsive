@@ -2,7 +2,7 @@
     "name": "drmonty-datatables-responsive",
     "repo": "drmonty/datatables-responsive",
     "description": "Responsive extension for DataTables, providing support for complex tables on all device screen sizes",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "homepage": "http://www.datatables.net/",
     "author": {
         "name": "Allan Jardine",
@@ -16,7 +16,21 @@
         "js/dataTables.responsive.js"
     ],
     "files": [
+        "js/responsive.foundation.js",
+        "js/responsive.jqueryui.js",
+        "js/responsive.bootstrap.min.js",
+        "js/responsive.bootstrap.js",
+        "js/responsive.jqueryui.min.js",
+        "js/responsive.foundation.min.js",
+        "js/dataTables.responsive.js",
         "js/dataTables.responsive.min.js",
-        "css/dataTables.responsive.min.css"
+        "css/dataTables.responsive.css",
+        "css/responsive.bootstrap.css",
+        "css/responsive.foundation.css",
+        "css/responsive.bootstrap.min.css",
+        "css/dataTables.responsive.min.css",
+        "css/responsive.jqueryui.min.css",
+        "css/responsive.foundation.min.css",
+        "css/responsive.jqueryui.css"
     ]
 }
