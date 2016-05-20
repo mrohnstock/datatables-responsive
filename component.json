@@ -2,7 +2,7 @@
     "name": "drmonty-datatables-responsive",
     "repo": "drmonty/datatables-responsive",
     "description": "Responsive extension for DataTables, providing support for complex tables on all device screen sizes",
-    "version": "2.0.2",
+    "version": "2.1.0",
     "homepage": "http://www.datatables.net/",
     "author": {
         "name": "Allan Jardine",
@@ -16,21 +16,29 @@
         "js/dataTables.responsive.js"
     ],
     "files": [
-        "js/responsive.foundation.js",
-        "js/responsive.jqueryui.js",
-        "js/responsive.bootstrap.min.js",
-        "js/responsive.bootstrap.js",
-        "js/responsive.jqueryui.min.js",
-        "js/responsive.foundation.min.js",
-        "js/dataTables.responsive.js",
-        "js/dataTables.responsive.min.js",
         "css/dataTables.responsive.css",
+        "css/responsive.bootstrap4.min.css",
         "css/responsive.bootstrap.css",
+        "css/responsive.semanticui.css",
         "css/responsive.foundation.css",
         "css/responsive.bootstrap.min.css",
         "css/dataTables.responsive.min.css",
+        "css/responsive.bootstrap4.css",
         "css/responsive.jqueryui.min.css",
         "css/responsive.foundation.min.css",
-        "css/responsive.jqueryui.css"
+        "css/responsive.semanticui.min.css",
+        "css/responsive.jqueryui.css",
+        "js/responsive.foundation.js",
+        "js/responsive.bootstrap4.min.js",
+        "js/responsive.semanticui.js",
+        "js/responsive.jqueryui.js",
+        "js/responsive.bootstrap.min.js",
+        "js/responsive.bootstrap.js",
+        "js/responsive.semanticui.min.js",
+        "js/responsive.jqueryui.min.js",
+        "js/responsive.foundation.min.js",
+        "js/responsive.bootstrap4.js",
+        "js/dataTables.responsive.js",
+        "js/dataTables.responsive.min.js"
     ]
 }
